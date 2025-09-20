@@ -1,7 +1,18 @@
+using AllegroDealersBot.Models;
+using AllegroDealersBot.Services;
 using AllegroDealersBot.Worker;
 
-var builder = Host.CreateApplicationBuilder(args);
-builder.Services.AddHostedService<Worker>();
+IHost host = Host.CreateDefaultBuilder(args)
+    .ConfigureServices((hostContext, services) =>
+    {
+        services.Configure<AllegroSettings>(hostContext.Configuration.GetSection("AppSettings"));
+        
+        services.AddHostedService<Worker>();
 
-var host = builder.Build();
+        services.AddSingleton<CatalogFetcher>();
+        
+        services.AddSingleton<CatalogSerializer>();
+    })
+    .Build();
+
 host.Run();

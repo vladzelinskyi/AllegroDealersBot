@@ -1,15 +1,21 @@
 using AllegroDealersBot.Interfaces;
 using AllegroDealersBot.Models;
+using Microsoft.Extensions.Options;
 
 namespace AllegroDealersBot.Services;
 
 internal class CatalogFetcher : ICatalogFetcher
 {
-    // private string url = ConfigurationManager.AppSettings["CatalogUrl"];
-    private readonly ISerializer _serializer;
+    private string _url;
+    private readonly AllegroSettings _settings;
+    private readonly ILogger<CatalogFetcher> _logger;
+    private readonly CatalogSerializer _serializer;
 
-    public CatalogFetcher(ISerializer serializer)
+    public CatalogFetcher(IOptions<AllegroSettings> settings, ILogger<CatalogFetcher> logger, CatalogSerializer serializer)
     {
+        _settings = settings.Value;
+        _logger = logger;
+        _url = _settings.CatalogUrl;
         _serializer = serializer;
     }
 
@@ -19,8 +25,8 @@ internal class CatalogFetcher : ICatalogFetcher
 
         using (var client = new HttpClient())
         {
-            client.BaseAddress = new Uri(url);
-            var response = client.GetAsync(url).Result;
+            client.BaseAddress = new Uri(_url);
+            var response = client.GetAsync(_url).Result;
 
             if (response.IsSuccessStatusCode)
             {

@@ -1,12 +1,18 @@
+using AllegroDealersBot.Services;
+
 namespace AllegroDealersBot.Worker;
 
-public class Worker : BackgroundService
+internal class Worker : BackgroundService
 {
     private readonly ILogger<Worker> _logger;
+    private readonly CatalogFetcher _catalogFetcher;
 
-    public Worker(ILogger<Worker> logger)
+    public Worker(ILogger<Worker> logger, CatalogFetcher  catalog)
     {
         _logger = logger;
+        _catalogFetcher =  catalog;
+
+        var cat = _catalogFetcher.FetchCatalog();
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
