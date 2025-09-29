@@ -5,7 +5,7 @@ using System.Xml.Serialization;
 using AllegroDealersBot.Interfaces;
 using AllegroDealersBot.Models;
 
-namespace AllegroDealersBot.Services;
+namespace AllegroDealersBot.Worker.Services;
 
 internal class CatalogSerializer : ISerializer
 {

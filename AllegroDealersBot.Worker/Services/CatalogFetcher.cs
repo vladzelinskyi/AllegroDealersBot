@@ -1,8 +1,7 @@
-using AllegroDealersBot.Interfaces;
 using AllegroDealersBot.Models;
 using Microsoft.Extensions.Options;
 
-namespace AllegroDealersBot.Services;
+namespace AllegroDealersBot.Worker.Services;
 
 internal class CatalogFetcher : ICatalogFetcher
 {
@@ -11,10 +10,10 @@ internal class CatalogFetcher : ICatalogFetcher
     private readonly ILogger<CatalogFetcher> _logger;
     private readonly CatalogSerializer _serializer;
 
-    public CatalogFetcher(IOptions<AllegroSettings> settings, ILogger<CatalogFetcher> logger, CatalogSerializer serializer)
+    public CatalogFetcher(IOptions<AllegroSettings> settings,
+        CatalogSerializer serializer)
     {
         _settings = settings.Value;
-        _logger = logger;
         _url = _settings.CatalogUrl;
         _serializer = serializer;
     }
@@ -27,7 +26,7 @@ internal class CatalogFetcher : ICatalogFetcher
         {
             client.BaseAddress = new Uri(_url);
             var response = client.GetAsync(_url).Result;
-
+            
             if (response.IsSuccessStatusCode)
             {
                 var content = response.Content.ReadAsStringAsync().Result;
@@ -38,7 +37,7 @@ internal class CatalogFetcher : ICatalogFetcher
                 catalog = new YmlCatalog();
             }
         }
-
+        
         return catalog;
     }
 }
